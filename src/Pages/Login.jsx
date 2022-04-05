@@ -1,4 +1,7 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { thunkLoginAPI } from '../Redux/Actions';
 
 class Login extends Component {
   constructor(props) {
@@ -29,6 +32,7 @@ class Login extends Component {
 
   render() {
     const { nickname, email, isdisabled } = this.state;
+    const { token, history } = this.props;
     return (
       <div>
         <h1>Login</h1>
@@ -52,8 +56,20 @@ class Login extends Component {
           type="button"
           disabled={ isdisabled }
           data-testid="btn-play"
+          onClick={ () => {
+            token(token);
+            history.push('/jogo');
+          } }
         >
           Play
+
+        </button>
+        <button
+          type="button"
+          data-testid="btn-settings"
+          onClick={ () => { history.push('/configuração'); } }
+        >
+          Configuração
 
         </button>
       </div>
@@ -61,4 +77,15 @@ class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+  token: PropTypes.func,
+}.isRequired;
+
+const mapDispatchToProps = (dispatch) => ({
+  token: () => dispatch(thunkLoginAPI()),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
