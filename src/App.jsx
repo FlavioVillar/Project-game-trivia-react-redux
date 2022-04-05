@@ -2,7 +2,9 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 // import logo from './trivia.png';
 import Login from './Pages/Login';
+import Jogo from './Pages/Jogo';
 import './App.css';
+import Config from './Pages/Config';
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
     // </div>
     <Switch>
       <Route exact path="/" component={ Login } />
+      <Route exact path="/jogo" component={ Jogo } />
+      <Route exact path="/configuração" component={ Config } />
     </Switch>
   );
 }
