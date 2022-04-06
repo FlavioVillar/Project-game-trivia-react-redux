@@ -64,9 +64,9 @@ class Login extends Component {
           type="button"
           disabled={ isdisabled }
           data-testid="btn-play"
-          onClick={ () => {
+          onClick={ async () => {
             this.convertMd5FromEmail(email);
-            token(token);
+            await token(token);
             history.push('/jogo');
           } }
         >
