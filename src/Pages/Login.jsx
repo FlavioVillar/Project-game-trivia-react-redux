@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { thunkLoginAPI } from '../Redux/Actions';
+import md5 from 'crypto-js/md5';
+import { thunkLoginAPI, thunkGravatarAPI } from '../Redux/Actions';
 
 class Login extends Component {
   constructor(props) {
@@ -28,6 +29,13 @@ class Login extends Component {
     } else {
       this.setState({ isdisabled: false });
     }
+  }
+
+  convertMd5FromEmail = (email) => {
+    const { nickname } = this.state;
+    const md5Email = md5(email).toString();
+    const { loginNickEmail } = this.props;
+    loginNickEmail(md5Email, nickname, email);
   }
 
   render() {
@@ -57,6 +65,7 @@ class Login extends Component {
           disabled={ isdisabled }
           data-testid="btn-play"
           onClick={ () => {
+            this.convertMd5FromEmail(email);
             token(token);
             history.push('/jogo');
           } }
@@ -67,7 +76,9 @@ class Login extends Component {
         <button
           type="button"
           data-testid="btn-settings"
-          onClick={ () => { history.push('/configuração'); } }
+          onClick={ () => {
+            history.push('/configuração');
+          } }
         >
           Configuração
 
@@ -86,6 +97,8 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   token: () => dispatch(thunkLoginAPI()),
+  loginNickEmail:
+    (md5Email, nickname, email) => dispatch(thunkGravatarAPI(md5Email, nickname, email)),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
