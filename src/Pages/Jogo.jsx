@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import HeaderJogo from '../components/HeaderJogo';
 
 class Jogo extends Component {
   render() {
     return (
-      <div>Jogo</div>
+      <div>
+        <HeaderJogo />
+        Jogo
+      </div>
     );
   }
 }

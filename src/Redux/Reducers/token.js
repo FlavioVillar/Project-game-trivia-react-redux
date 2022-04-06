@@ -1,7 +1,6 @@
 const token = (state = '', action) => {
   switch (action.type) {
-  case 'USER_LOGIN':
-    console.log(action.payload);
+  case 'TOKEN_LOGIN':
     return action.payload;
 
   default:
