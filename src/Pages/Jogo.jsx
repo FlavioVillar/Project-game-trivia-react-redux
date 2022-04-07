@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { thunkLoginAPI } from '../Redux/Actions';
 import HeaderJogo from '../components/HeaderJogo';
+import Timer from '../components/Timer';
+import ButtonTrivia from '../components/ButtonTrivia';
 
 class Jogo extends Component {
   constructor(props) {
@@ -20,22 +22,19 @@ class Jogo extends Component {
   componentDidMount() {
     this.getFetchTrivia();
   }
-  // Chama função da API quando o componente é montado.
 
   componentDidUpdate() {
     this.validToken();
   }
-  // chama função que valida o token cada vez que o componente é montado.
 
-  validToken = () => {
-    const { token } = this.props;
-    if (!token) {
-      thunkLoginAPI();
-    } else {
-      console.log('token validado');
-    }
-  }
-  // verifica se o Token (com validade de 6 horas) ainda está ativo.
+   validToken = () => {
+     const { token } = this.props;
+     if (!token) {
+       thunkLoginAPI();
+     } else {
+       console.log('token validado');
+     }
+   }
 
   handleClick = () => {
     this.setState({ borderColor: true });
@@ -56,12 +55,9 @@ class Jogo extends Component {
       // concatena as respostas corretas e as incorretas em um array e retorna um array
     });
   }
-  // função que chama a API e retorna os dados da pergunta.
 
   render() {
-    const numberRandom = 0.5;
-    const { category, question, correctAnswer, answerOptions, borderColor } = this.state;
-    // const wrongAnswer = answerOptions.filter(answer => answer !== correctAnswer);
+    const { category, question, borderColor } = this.state;
     return (
       <div>
         <HeaderJogo />
@@ -69,43 +65,10 @@ class Jogo extends Component {
           <div data-testid="answer-options">
             <h3 data-testid="question-category">{category}</h3>
             <h3 data-testid="question-text">{question}</h3>
-            { answerOptions
-                 && (
-                   answerOptions.map((answer, index) => {
-                     if (answer === correctAnswer) {
-                       //  compara se a resposta é igual a resposta correta e retorna no 1º button a resposta correta e no  2º button a resposta errada
-                       //  cria um button com a/s resposta/s errada/s e um com a resposta certa.
-                       return (
-                         <button
-                           key={ index }
-                           data-testid="correct-answer"
-                           type="button"
-                           onClick={ this.handleClick }
-                           style={ {
-                             border: borderColor && '3px solid rgb(6, 240, 15)',
-                           } }
-                         >
-                           {answer}
-                         </button>
-                       );
-                     }
-                     return (
-                       <button
-                         key={ index }
-                         data-testid={ `wrong-answer-${index}` }
-                         type="button"
-                         onClick={ this.handleClick }
-                         style={ {
-                           border: borderColor && '3px solid rgb(255, 0, 0)',
-                         } }
-                       >
-                         {answer}
-                       </button>
-                     );
-                   }).sort(() => Math.random() - numberRandom))}
-            {/* Método sort combinado com função  para retornar uma ordem aleatória vito em :  https://www.codecademy.com/forum_questions/4f609c49e0bd2b0003011313 */}
+            <ButtonTrivia { ...this.state } handleClick={ this.handleClick } />
           </div>
         )}
+        <Timer borderColor={ borderColor } handleClick={ this.handleClick } />
       </div>
     );
   }
