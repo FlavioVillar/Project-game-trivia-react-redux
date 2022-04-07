@@ -20,6 +20,7 @@ class Login extends Component {
       this.emailValidation();
     });
   }
+  // função que pega os valores do input e chama a função que validará o email.
 
   emailValidation = () => {
     const { email, nickname } = this.state;
@@ -30,6 +31,7 @@ class Login extends Component {
       this.setState({ isdisabled: false });
     }
   }
+  // função que faz a validação do email e input vazio para habilitar o botão de play.
 
   convertMd5FromEmail = (email) => {
     const { nickname } = this.state;
@@ -37,6 +39,7 @@ class Login extends Component {
     const { loginNickEmail } = this.props;
     loginNickEmail(md5Email, nickname, email);
   }
+  // função que converte o email em md5 e passa para o reducer por dispatch, junto com o nickname e email.
 
   render() {
     const { nickname, email, isdisabled } = this.state;
@@ -100,5 +103,6 @@ const mapDispatchToProps = (dispatch) => ({
   loginNickEmail:
     (md5Email, nickname, email) => dispatch(thunkGravatarAPI(md5Email, nickname, email)),
 });
+// função que mapeia o dispatch para o props.
 
 export default connect(null, mapDispatchToProps)(Login);
