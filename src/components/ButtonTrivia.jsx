@@ -3,8 +3,12 @@ import React, { Component } from 'react';
 
 class ButtonTrivia extends Component {
   render() {
-    const numberRandom = 0.5;
-    const { answerOptions, handleClick, borderColor, correctAnswer } = this.props;
+    const {
+      answerOptions,
+      handleClick,
+      getAnswer,
+      correctAnswer,
+      handleCorrectAnswer } = this.props;
     return (
       <div>
         { answerOptions
@@ -18,10 +22,13 @@ class ButtonTrivia extends Component {
                            key={ index }
                            data-testid="correct-answer"
                            type="button"
-                           onClick={ handleClick }
-                           disabled={ borderColor }
+                           onClick={ () => {
+                             handleClick();
+                             handleCorrectAnswer();
+                           } }
+                           disabled={ getAnswer }
                            style={ {
-                             border: borderColor && '3px solid rgb(6, 240, 15)',
+                             border: getAnswer && '3px solid rgb(6, 240, 15)',
                            } }
                          >
                            {answer}
@@ -34,16 +41,15 @@ class ButtonTrivia extends Component {
                          data-testid={ `wrong-answer-${index}` }
                          type="button"
                          onClick={ handleClick }
-                         disabled={ borderColor }
+                         disabled={ getAnswer }
                          style={ {
-                           border: borderColor && '3px solid rgb(255, 0, 0)',
+                           border: getAnswer && '3px solid rgb(255, 0, 0)',
                          } }
                        >
                          {answer}
                        </button>
                      );
-                   }).sort(() => Math.random() - numberRandom))}
-        {/* Método sort combinado com função  para retornar uma ordem aleatória vito em :  https://www.codecademy.com/forum_questions/4f609c49e0bd2b0003011313 */}
+                   }))}
       </div>
     );
   }
@@ -53,7 +59,7 @@ ButtonTrivia.propTypes = {
   answerOptions: PropTypes.shape({
     map: PropTypes.func,
   }),
-  borderColor: PropTypes.string,
+  getAnswer: PropTypes.string,
   correctAnswer: PropTypes.any,
   handleClick: PropTypes.any,
 }.isRequired;

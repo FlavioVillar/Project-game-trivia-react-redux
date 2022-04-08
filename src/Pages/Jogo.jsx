@@ -1,87 +1,156 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { thunkLoginAPI } from '../Redux/Actions';
+import { thunkLoginAPI, actionScore } from '../Redux/Actions';
 import HeaderJogo from '../components/HeaderJogo';
-import Timer from '../components/Timer';
 import ButtonTrivia from '../components/ButtonTrivia';
+import fetchgravatarAPI from '../helpers/triviaAPI';
 
 class Jogo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       category: '',
-      question: '',
+      question: [],
       correctAnswer: '',
-      // wrongAnswer: [],
+      wrongAnswer: [],
       answerOptions: '',
-      borderColor: false,
+      getAnswer: false,
+      difficulty: '',
+      timerOver: 30,
+      countAnswer: 0,
     };
   }
 
   componentDidMount() {
-    this.getFetchTrivia();
+    this.getAnswerFetchTrivia();
+    this.validToken();
+    // this.timerSetup();
   }
 
-  componentDidUpdate() {
-    this.validToken();
-  }
+  // componentDidUpdate() {
+  //   this.validToken();
+  // }
 
    validToken = () => {
      const { token } = this.props;
-     if (!token) {
-       thunkLoginAPI();
-     } else {
-       console.log('token validado');
-     }
+     if (!token) thunkLoginAPI();
+     else console.log('token validado');
    }
 
   handleClick = () => {
-    this.setState({ borderColor: true });
-  }
-
-  getFetchTrivia = async () => {
-    const { token } = this.props;
-    const url = `https://opentdb.com/api.php?amount=5&token=${token}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const { countAnswer } = this.state;
     this.setState({
-      category: data.results[0].category,
-      question: data.results[0].question,
-      correctAnswer: data.results[0].correct_answer,
-      // wrongAnswer: data.results[0].incorrect_answers,
-      answerOptions: data.results[0].incorrect_answers
-        .concat(data.results[0].correct_answer),
-      // concatena as respostas corretas e as incorretas em um array e retorna um array
+      getAnswer: true,
+      countAnswer: countAnswer + 1,
     });
   }
 
+  handleCorrectAnswer = () => {
+    this.countScore();
+  }
+
+  countScore = () => {
+    const { difficulty, timerOver } = this.state;
+    const { score } = this.props;
+    const ten = 10;
+    const one = 1;
+    const two = 2;
+    const three = 3;
+    let countScore;
+    if (difficulty === 'easy') countScore = ten + (timerOver * one);
+    else if (difficulty === 'medium') countScore = ten + (timerOver * two);
+    else if (difficulty === 'hard') countScore = ten + (timerOver * three);
+    score(countScore);
+  }
+
+  getAnswerFetchTrivia = async () => {
+    const { token } = this.props;
+    const data = await fetchgravatarAPI(token);
+    this.setState({
+      difficulty: data.results[0].difficulty,
+      category: data.results[0].category,
+      question: data.results[0].question,
+      correctAnswer: data.results[0].correct_answer,
+      wrongAnswer: data.results[0].incorrect_answers,
+      answerOptions: [data.results[0].correct_answer,
+        ...data.results[0].incorrect_answers],
+    });
+    this.timerSetup();
+    const numberRandom = 0.5;
+    const { answerOptions } = this.state;
+    const sortAnswer = answerOptions.sort(() => Math.random() - numberRandom);
+    this.setState({ answerOptions: sortAnswer });
+  }
+
+   timerSetup = () => {
+     const oneSeconds = 1000;
+     const myIterval = setInterval(() => {
+       const { timerOver, getAnswer } = this.state;
+       if (timerOver === 0) {
+         clearInterval(myIterval);
+         return this.handleClick();
+       }
+       if (getAnswer) {
+         clearInterval(myIterval);
+       }
+       this.setState((prevState) => ({ timerOver: prevState.timerOver - 1 }));
+     }, oneSeconds);
+   }
+
+  handleNextAnswer = async () => {
+    const five = 5;
+    const { countAnswer } = this.state;
+    const { history } = this.props;
+    await this.getAnswerFetchTrivia();
+    this.setState({ getAnswer: false });
+    this.setState({ timerOver: 30 });
+    if (countAnswer === five) {
+      history.push('/feedback');
+      this.setState({ countAnswer: 0 });
+    }
+  }
+
   render() {
-    const { category, question, borderColor } = this.state;
+    const { category, question, timerOver, getAnswer, countAnswer } = this.state;
+    console.log(countAnswer);
     return (
       <div>
         <HeaderJogo />
-        {category && (
-          <div data-testid="answer-options">
-            <h3 data-testid="question-category">{category}</h3>
-            <h3 data-testid="question-text">{question}</h3>
-            <ButtonTrivia { ...this.state } handleClick={ this.handleClick } />
-          </div>
-        )}
-        <Timer borderColor={ borderColor } handleClick={ this.handleClick } />
+        <div data-testid="answer-options">
+          <h3 data-testid="question-category">{category}</h3>
+          <h3 data-testid="question-text">{question}</h3>
+          <ButtonTrivia
+            { ...this.state }
+            handleClick={ this.handleClick }
+            handleCorrectAnswer={ this.handleCorrectAnswer }
+          />
+        </div>
+        <div>{timerOver}</div>
+        <div>
+          {getAnswer && (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ this.handleNextAnswer }
+            >
+              Próxima
+            </button>
+          )}
+        </div>
       </div>
     );
   }
 }
 
 Jogo.propTypes = {
-  email: PropTypes.any,
   token: PropTypes.any,
 }.isRequired;
 
-const mapStateToProps = (state) => ({
-  token: state.token,
-  email: state.playerGravatar.email,
+const mapStateToProps = (state) => ({ token: state.token });
+
+const mapDispatchToProps = (dispatch) => ({
+  score: (score) => dispatch(actionScore(score)),
 });
 
-export default connect(mapStateToProps, null)(Jogo);
+export default connect(mapStateToProps, mapDispatchToProps)(Jogo);

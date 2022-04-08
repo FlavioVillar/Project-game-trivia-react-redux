@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
-import { thunkLoginAPI, thunkGravatarAPI } from '../Redux/Actions';
+import { thunkLoginAPI, thunkGravatarAPI, actionNickEmail } from '../Redux/Actions';
+import logo from '../trivia.png';
 
 class Login extends Component {
   constructor(props) {
@@ -20,7 +21,6 @@ class Login extends Component {
       this.emailValidation();
     });
   }
-  // função que pega os valores do input e chama a função que validará o email.
 
   emailValidation = () => {
     const { email, nickname } = this.state;
@@ -31,61 +31,64 @@ class Login extends Component {
       this.setState({ isdisabled: false });
     }
   }
-  // função que faz a validação do email e input vazio para habilitar o botão de play.
 
-  convertMd5FromEmail = (email) => {
-    const { nickname } = this.state;
-    const md5Email = md5(email).toString();
-    const { loginNickEmail } = this.props;
-    loginNickEmail(md5Email, nickname, email);
+  convertMd5FromEmail = (item) => {
+    const md5Email = md5(item).toString();
+    const { gravatarUrl } = this.props;
+    gravatarUrl(md5Email);
   }
-  // função que converte o email em md5 e passa para o reducer por dispatch, junto com o nickname e email.
 
   render() {
     const { nickname, email, isdisabled } = this.state;
-    const { token, history } = this.props;
+    const { token, history, getNickEmail } = this.props;
     return (
       <div>
-        <h1>Login</h1>
-        <input
-          data-testid="input-player-name"
-          type="text"
-          name="nickname"
-          value={ nickname }
-          onChange={ this.handleChange }
-          placeholder="Nickname"
-        />
-        <input
-          data-testid="input-gravatar-email"
-          type="email"
-          name="email"
-          value={ email }
-          onChange={ this.handleChange }
-          placeholder="Email"
-        />
-        <button
-          type="button"
-          disabled={ isdisabled }
-          data-testid="btn-play"
-          onClick={ async () => {
-            this.convertMd5FromEmail(email);
-            await token(token);
-            history.push('/jogo');
-          } }
-        >
-          Play
+        <div className="App">
+          <div className="App-header">
+            <img src={ logo } className="App-logo" alt="logo" />
 
-        </button>
-        <button
-          type="button"
-          data-testid="btn-settings"
-          onClick={ () => {
-            history.push('/configuração');
-          } }
-        >
-          Configuração
+            <h1>Login</h1>
+            <input
+              data-testid="input-player-name"
+              type="text"
+              name="nickname"
+              value={ nickname }
+              onChange={ this.handleChange }
+              placeholder="Nickname"
+            />
+            <input
+              data-testid="input-gravatar-email"
+              type="email"
+              name="email"
+              value={ email }
+              onChange={ this.handleChange }
+              placeholder="Email"
+            />
+            <button
+              type="button"
+              disabled={ isdisabled }
+              data-testid="btn-play"
+              onClick={ async () => {
+                this.convertMd5FromEmail(email);
+                getNickEmail(nickname, email);
+                await token(token);
+                history.push('/jogo');
+              } }
+            >
+              Play
 
-        </button>
+            </button>
+            <button
+              type="button"
+              data-testid="btn-settings"
+              onClick={ () => {
+                history.push('/configuração');
+              } }
+            >
+              Configuração
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -100,9 +103,8 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   token: () => dispatch(thunkLoginAPI()),
-  loginNickEmail:
-    (md5Email, nickname, email) => dispatch(thunkGravatarAPI(md5Email, nickname, email)),
+  getNickEmail: (nickname, email) => dispatch(actionNickEmail(nickname, email)),
+  gravatarUrl: (md5Email) => dispatch(thunkGravatarAPI(md5Email)),
 });
-// função que mapeia o dispatch para o props.
 
 export default connect(null, mapDispatchToProps)(Login);
