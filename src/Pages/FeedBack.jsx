@@ -14,13 +14,27 @@ class FeedBack extends Component {
   }
 
   render() {
-    const { assertions, score } = this.props;
+    const { assertions, score, history } = this.props;
     return (
       <div>
         <HeaderFeedback />
         <p data-testid="feedback-total-score">{score}</p>
         <h1 data-testid="feedback-text">{this.getAssertions()}</h1>
         <h1 data-testid="feedback-total-question">{assertions}</h1>
+        <button
+          data-testid="btn-play-again"
+          type="button"
+          onClick={ () => history.push('/') }
+        >
+          Play Again
+        </button>
+        <button
+          data-testid="btn-ranking"
+          type="button"
+          onClick={ () => history.push('/ranking') }
+        >
+          Ranking
+        </button>
       </div>
     );
   }
