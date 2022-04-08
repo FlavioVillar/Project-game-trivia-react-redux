@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import { thunkLoginAPI, thunkGravatarAPI, actionNickEmail } from '../Redux/Actions';
+import logo from '../trivia.png';
 
 class Login extends Component {
   constructor(props) {
@@ -42,46 +43,52 @@ class Login extends Component {
     const { token, history, getNickEmail } = this.props;
     return (
       <div>
-        <h1>Login</h1>
-        <input
-          data-testid="input-player-name"
-          type="text"
-          name="nickname"
-          value={ nickname }
-          onChange={ this.handleChange }
-          placeholder="Nickname"
-        />
-        <input
-          data-testid="input-gravatar-email"
-          type="email"
-          name="email"
-          value={ email }
-          onChange={ this.handleChange }
-          placeholder="Email"
-        />
-        <button
-          type="button"
-          disabled={ isdisabled }
-          data-testid="btn-play"
-          onClick={ async () => {
-            this.convertMd5FromEmail(email);
-            getNickEmail(nickname, email);
-            await token(token);
-            history.push('/jogo');
-          } }
-        >
-          Play
+        <div className="App">
+          <div className="App-header">
+            <img src={ logo } className="App-logo" alt="logo" />
 
-        </button>
-        <button
-          type="button"
-          data-testid="btn-settings"
-          onClick={ () => {
-            history.push('/configuração');
-          } }
-        >
-          Configuração
-        </button>
+            <h1>Login</h1>
+            <input
+              data-testid="input-player-name"
+              type="text"
+              name="nickname"
+              value={ nickname }
+              onChange={ this.handleChange }
+              placeholder="Nickname"
+            />
+            <input
+              data-testid="input-gravatar-email"
+              type="email"
+              name="email"
+              value={ email }
+              onChange={ this.handleChange }
+              placeholder="Email"
+            />
+            <button
+              type="button"
+              disabled={ isdisabled }
+              data-testid="btn-play"
+              onClick={ async () => {
+                this.convertMd5FromEmail(email);
+                getNickEmail(nickname, email);
+                await token(token);
+                history.push('/jogo');
+              } }
+            >
+              Play
+
+            </button>
+            <button
+              type="button"
+              data-testid="btn-settings"
+              onClick={ () => {
+                history.push('/configuração');
+              } }
+            >
+              Configuração
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

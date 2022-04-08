@@ -11,23 +11,26 @@ class Jogo extends Component {
     super(props);
     this.state = {
       category: '',
-      question: '',
+      question: [],
       correctAnswer: '',
       wrongAnswer: [],
       answerOptions: '',
       getAnswer: false,
       difficulty: '',
       timerOver: 30,
+      countAnswer: 0,
     };
   }
 
   componentDidMount() {
     this.getAnswerFetchTrivia();
+    this.validToken();
+    // this.timerSetup();
   }
 
-  componentDidUpdate() {
-    this.validToken();
-  }
+  // componentDidUpdate() {
+  //   this.validToken();
+  // }
 
    validToken = () => {
      const { token } = this.props;
@@ -36,7 +39,11 @@ class Jogo extends Component {
    }
 
   handleClick = () => {
-    this.setState({ getAnswer: true });
+    const { countAnswer } = this.state;
+    this.setState({
+      getAnswer: true,
+      countAnswer: countAnswer + 1,
+    });
   }
 
   handleCorrectAnswer = () => {
@@ -60,7 +67,6 @@ class Jogo extends Component {
   getAnswerFetchTrivia = async () => {
     const { token } = this.props;
     const data = await fetchgravatarAPI(token);
-    console.log(data);
     this.setState({
       difficulty: data.results[0].difficulty,
       category: data.results[0].category,
@@ -92,26 +98,49 @@ class Jogo extends Component {
      }, oneSeconds);
    }
 
-   render() {
-     const { category, question, timerOver } = this.state;
-     return (
-       <div>
-         <HeaderJogo />
-         {category && (
-           <div data-testid="answer-options">
-             <h3 data-testid="question-category">{category}</h3>
-             <h3 data-testid="question-text">{question}</h3>
-             <ButtonTrivia
-               { ...this.state }
-               handleClick={ this.handleClick }
-               handleCorrectAnswer={ this.handleCorrectAnswer }
-             />
-           </div>
-         )}
-         <div>{timerOver}</div>
-       </div>
-     );
-   }
+  handleNextAnswer = async () => {
+    const five = 5;
+    const { countAnswer } = this.state;
+    const { history } = this.props;
+    await this.getAnswerFetchTrivia();
+    this.setState({ getAnswer: false });
+    this.setState({ timerOver: 30 });
+    if (countAnswer === five) {
+      history.push('/feedback');
+      this.setState({ countAnswer: 0 });
+    }
+  }
+
+  render() {
+    const { category, question, timerOver, getAnswer, countAnswer } = this.state;
+    console.log(countAnswer);
+    return (
+      <div>
+        <HeaderJogo />
+        <div data-testid="answer-options">
+          <h3 data-testid="question-category">{category}</h3>
+          <h3 data-testid="question-text">{question}</h3>
+          <ButtonTrivia
+            { ...this.state }
+            handleClick={ this.handleClick }
+            handleCorrectAnswer={ this.handleCorrectAnswer }
+          />
+        </div>
+        <div>{timerOver}</div>
+        <div>
+          {getAnswer && (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ this.handleNextAnswer }
+            >
+              Próxima
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 Jogo.propTypes = {
