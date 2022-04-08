@@ -11,23 +11,21 @@ export const thunkLoginAPI = () => async (dispatch) => {
 };
 
 // !
-export const actionPlayerGravatar = (url, nickname, email) => ({
+export const actionNickEmail = (nickname, email) => ({
   type: 'USER_NICK_EMAIL',
-  url,
   nickname,
   email,
 });
-
-export const thunkGravatarAPI = (md5Email, nickname, email) => async (dispatch) => {
-  const url = `https://www.gravatar.com/avatar/${md5Email}`;
-  dispatch(actionPlayerGravatar(url, nickname, email));
-};
-
 // !
-export const actionTimerScore = (payload) => ({
-  type: 'TIMER_SCORE',
-  payload,
+export const actionPlayerGravatar = (url) => ({
+  type: 'USER_URL',
+  url,
 });
+
+export const thunkGravatarAPI = (md5Email) => async (dispatch) => {
+  const url = `https://www.gravatar.com/avatar/${md5Email}`;
+  dispatch(actionPlayerGravatar(url));
+};
 
 // !
 

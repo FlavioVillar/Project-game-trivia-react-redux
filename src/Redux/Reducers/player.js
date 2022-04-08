@@ -14,6 +14,13 @@ const player = (state = INITIAL_STATE, action) => {
       assertions: state.assertions + 1,
     };
 
+  case 'USER_NICK_EMAIL':
+    return {
+      ...state,
+      nome: action.nickname,
+      email: action.email,
+    };
+
   default:
     return state;
   }

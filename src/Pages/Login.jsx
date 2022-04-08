@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
-import { thunkLoginAPI, thunkGravatarAPI } from '../Redux/Actions';
+import { thunkLoginAPI, thunkGravatarAPI, actionNickEmail } from '../Redux/Actions';
 
 class Login extends Component {
   constructor(props) {
@@ -31,16 +31,15 @@ class Login extends Component {
     }
   }
 
-  convertMd5FromEmail = (email) => {
-    const { nickname } = this.state;
-    const md5Email = md5(email).toString();
-    const { loginNickEmail } = this.props;
-    loginNickEmail(md5Email, nickname, email);
+  convertMd5FromEmail = (item) => {
+    const md5Email = md5(item).toString();
+    const { gravatarUrl } = this.props;
+    gravatarUrl(md5Email);
   }
 
   render() {
     const { nickname, email, isdisabled } = this.state;
-    const { token, history } = this.props;
+    const { token, history, getNickEmail } = this.props;
     return (
       <div>
         <h1>Login</h1>
@@ -66,6 +65,7 @@ class Login extends Component {
           data-testid="btn-play"
           onClick={ async () => {
             this.convertMd5FromEmail(email);
+            getNickEmail(nickname, email);
             await token(token);
             history.push('/jogo');
           } }
@@ -81,7 +81,6 @@ class Login extends Component {
           } }
         >
           Configuração
-
         </button>
       </div>
     );
@@ -97,9 +96,8 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   token: () => dispatch(thunkLoginAPI()),
-  loginNickEmail:
-    (md5Email, nickname, email) => dispatch(thunkGravatarAPI(md5Email, nickname, email)),
+  getNickEmail: (nickname, email) => dispatch(actionNickEmail(nickname, email)),
+  gravatarUrl: (md5Email) => dispatch(thunkGravatarAPI(md5Email)),
 });
-// função que mapeia o dispatch para o props.
 
 export default connect(null, mapDispatchToProps)(Login);

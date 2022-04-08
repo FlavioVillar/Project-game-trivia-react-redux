@@ -28,11 +28,10 @@ HeaderJogo.propTypes = {
 const mapStateToProps = (state) => {
   const { playerGravatar } = state;
   return {
-    nome: playerGravatar.nome,
+    nome: state.player.nome,
     url: playerGravatar.imgGravatar,
     score: state.player.score,
   };
 };
-// função que pega o estado e retorna para o componente.
 
 export default connect(mapStateToProps, null)(HeaderJogo);
