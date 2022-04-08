@@ -19,18 +19,14 @@ class Jogo extends Component {
       difficulty: '',
       timerOver: 30,
       countAnswer: 0,
+      sortAnswer: [],
     };
   }
 
   componentDidMount() {
     this.getAnswerFetchTrivia();
     this.validToken();
-    // this.timerSetup();
   }
-
-  // componentDidUpdate() {
-  //   this.validToken();
-  // }
 
    validToken = () => {
      const { token } = this.props;
@@ -75,12 +71,13 @@ class Jogo extends Component {
       wrongAnswer: data.results[0].incorrect_answers,
       answerOptions: [data.results[0].correct_answer,
         ...data.results[0].incorrect_answers],
+    }, () => {
+      this.timerSetup();
+      const numberRandom = 0.5;
+      const { answerOptions } = this.state;
+      const sortAnswer = [...answerOptions].sort(() => Math.random() - numberRandom);
+      this.setState({ sortAnswer });
     });
-    this.timerSetup();
-    const numberRandom = 0.5;
-    const { answerOptions } = this.state;
-    const sortAnswer = answerOptions.sort(() => Math.random() - numberRandom);
-    this.setState({ answerOptions: sortAnswer });
   }
 
    timerSetup = () => {
@@ -92,7 +89,7 @@ class Jogo extends Component {
          return this.handleClick();
        }
        if (getAnswer) {
-         clearInterval(myIterval);
+         return clearInterval(myIterval);
        }
        this.setState((prevState) => ({ timerOver: prevState.timerOver - 1 }));
      }, oneSeconds);
@@ -112,12 +109,11 @@ class Jogo extends Component {
   }
 
   render() {
-    const { category, question, timerOver, getAnswer, countAnswer } = this.state;
-    console.log(countAnswer);
+    const { category, question, timerOver, getAnswer } = this.state;
     return (
       <div>
         <HeaderJogo />
-        <div data-testid="answer-options">
+        <div>
           <h3 data-testid="question-category">{category}</h3>
           <h3 data-testid="question-text">{question}</h3>
           <ButtonTrivia
