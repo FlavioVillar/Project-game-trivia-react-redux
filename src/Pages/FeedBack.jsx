@@ -2,8 +2,14 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import HeaderFeedback from '../components/HeaderFeeback';
+import setSaveNameScore from '../helpers/setNameScoreStorage';
 
 class FeedBack extends Component {
+  componentDidMount() {
+    const { name, picture, score } = this.props;
+    setSaveNameScore({ name, picture, score });
+  }
+
   getAssertions = () => {
     const { assertions } = this.props;
     const three = 3;
@@ -14,7 +20,7 @@ class FeedBack extends Component {
   }
 
   render() {
-    const { assertions, score, history } = this.props;
+    const { assertions, score, history, dispatch } = this.props;
     return (
       <div>
         <HeaderFeedback />
@@ -31,7 +37,10 @@ class FeedBack extends Component {
         <button
           data-testid="btn-ranking"
           type="button"
-          onClick={ () => history.push('/ranking') }
+          onClick={ () => {
+            dispatch({ type: 'SCORE_UPDATE', payload: 0 });
+            history.push('/ranking');
+          } }
         >
           Ranking
         </button>
@@ -47,5 +56,7 @@ FeedBack.propTypes = {
 const mapStateToProps = (state) => ({
   assertions: state.player.assertions,
   score: state.player.score,
+  name: state.player.nome,
+  picture: state.playerGravatar.imgGravatar,
 });
 export default connect(mapStateToProps, null)(FeedBack);

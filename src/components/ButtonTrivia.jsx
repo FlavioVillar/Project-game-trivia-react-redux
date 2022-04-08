@@ -4,16 +4,16 @@ import React, { Component } from 'react';
 class ButtonTrivia extends Component {
   render() {
     const {
-      answerOptions,
       handleClick,
+      sortAnswer,
       getAnswer,
       correctAnswer,
       handleCorrectAnswer } = this.props;
     return (
-      <div>
-        { answerOptions
+      <div data-testid="answer-options">
+        { sortAnswer.length > 0
                  && (
-                   answerOptions.map((answer, index) => {
+                   sortAnswer.map((answer, index) => {
                      if (answer === correctAnswer) {
                        //  compara se a resposta é igual a resposta correta e retorna no 1º button a resposta correta e no  2º button a resposta errada
                        //  cria um button com a/s resposta/s errada/s e um com a resposta certa.
