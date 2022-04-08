@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 import token from './token';
-import triviaReducer from './trivia';
+import player from './score';
 import playerGravatar from './gravatar';
+import timer from './time';
 
 const rootReducer = combineReducers({
   token,
-  triviaReducer,
+  player,
   playerGravatar,
+  timer,
 
 });
 

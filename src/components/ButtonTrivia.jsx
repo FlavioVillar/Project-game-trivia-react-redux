@@ -2,14 +2,34 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 class ButtonTrivia extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sortQuestion: this.sorteioDeQuestao(),
+
+    };
+  }
+
+  sorteioDeQuestao = () => {
     const numberRandom = 0.5;
-    const { answerOptions, handleClick, borderColor, correctAnswer } = this.props;
+    const { answerOptions } = this.props;
+    console.log(answerOptions);
+    return answerOptions.sort(() => Math.random() - numberRandom);
+  }
+
+  render() {
+    const {
+      answerOptions,
+      handleClick,
+      borderColor,
+      correctAnswer,
+      handleCorrectAnswer } = this.props;
+    const { sortQuestion } = this.state;
     return (
       <div>
         { answerOptions
                  && (
-                   answerOptions.map((answer, index) => {
+                   sortQuestion.map((answer, index) => {
                      if (answer === correctAnswer) {
                        //  compara se a resposta é igual a resposta correta e retorna no 1º button a resposta correta e no  2º button a resposta errada
                        //  cria um button com a/s resposta/s errada/s e um com a resposta certa.
@@ -18,7 +38,10 @@ class ButtonTrivia extends Component {
                            key={ index }
                            data-testid="correct-answer"
                            type="button"
-                           onClick={ handleClick }
+                           onClick={ () => {
+                             handleClick();
+                             handleCorrectAnswer();
+                           } }
                            disabled={ borderColor }
                            style={ {
                              border: borderColor && '3px solid rgb(6, 240, 15)',
@@ -42,7 +65,7 @@ class ButtonTrivia extends Component {
                          {answer}
                        </button>
                      );
-                   }).sort(() => Math.random() - numberRandom))}
+                   }))}
         {/* Método sort combinado com função  para retornar uma ordem aleatória vito em :  https://www.codecademy.com/forum_questions/4f609c49e0bd2b0003011313 */}
       </div>
     );
