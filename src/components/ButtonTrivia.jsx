@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
+import * as S from '../Pages/jogoStyle';
+
 class ButtonTrivia extends Component {
   render() {
     const {
@@ -10,7 +12,7 @@ class ButtonTrivia extends Component {
       correctAnswer,
       handleCorrectAnswer } = this.props;
     return (
-      <div data-testid="answer-options">
+      <S.Container4 data-testid="answer-options">
         { sortAnswer.length > 0
                  && (
                    sortAnswer.map((answer, index) => {
@@ -18,7 +20,7 @@ class ButtonTrivia extends Component {
                        //  compara se a resposta é igual a resposta correta e retorna no 1º button a resposta correta e no  2º button a resposta errada
                        //  cria um button com a/s resposta/s errada/s e um com a resposta certa.
                        return (
-                         <button
+                         <S.ButtonQuestions
                            key={ index }
                            data-testid="correct-answer"
                            type="button"
@@ -32,11 +34,11 @@ class ButtonTrivia extends Component {
                            } }
                          >
                            {answer}
-                         </button>
+                         </S.ButtonQuestions>
                        );
                      }
                      return (
-                       <button
+                       <S.ButtonQuestions
                          key={ index }
                          data-testid={ `wrong-answer-${index}` }
                          type="button"
@@ -47,10 +49,10 @@ class ButtonTrivia extends Component {
                          } }
                        >
                          {answer}
-                       </button>
+                       </S.ButtonQuestions>
                      );
                    }))}
-      </div>
+      </S.Container4>
     );
   }
 }

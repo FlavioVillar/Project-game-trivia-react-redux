@@ -2,20 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import * as S from '../Pages/jogoStyle';
+
 class HeaderJogo extends Component {
   render() {
     const { nome, url, score } = this.props;
     return (
-      <div>
+      <S.HeaderContainer>
         {url
           && (
-            <header>
-              <img data-testid="header-profile-picture" src={ url } alt="Imagem perfil" />
-              <h3 data-testid="header-player-name">{nome}</h3>
-              <h3 data-testid="header-score">{score}</h3>
-            </header>
+            <S.HeaderAlign>
+              <S.Avatar
+                data-testid="header-profile-picture"
+                src={ url }
+                alt="Imagem perfil"
+              />
+              <S.NameUser data-testid="header-player-name">{nome}</S.NameUser>
+              <S.Score data-testid="header-score">{score}</S.Score>
+            </S.HeaderAlign>
           )}
-      </div>
+      </S.HeaderContainer>
     );
   }
 }

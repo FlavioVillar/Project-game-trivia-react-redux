@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as S from '../Pages/feedbackStyle';
 
 class HeaderFeedback extends Component {
   render() {
@@ -9,11 +10,15 @@ class HeaderFeedback extends Component {
       <div>
         {url
           && (
-            <header>
-              <img data-testid="header-profile-picture" src={ url } alt="Imagem perfil" />
-              <h3 data-testid="header-player-name">{nome}</h3>
-              <h3 data-testid="header-score">{score}</h3>
-            </header>
+            <S.Container2>
+              <S.Avatar
+                data-testid="header-profile-picture"
+                src={ url }
+                alt="Imagem perfil"
+              />
+              <S.NameUser data-testid="header-player-name">{nome}</S.NameUser>
+              <S.Score data-testid="header-score">{score}</S.Score>
+            </S.Container2>
           )}
       </div>
     );
