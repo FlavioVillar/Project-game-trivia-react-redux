@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import HeaderFeedback from '../components/HeaderFeeback';
 import setSaveNameScore from '../helpers/setNameScoreStorage';
+import * as S from './feedbackStyle';
 
 class FeedBack extends Component {
   componentDidMount() {
@@ -22,29 +23,31 @@ class FeedBack extends Component {
   render() {
     const { assertions, score, history, dispatch } = this.props;
     return (
-      <div>
+      <S.Container>
         <HeaderFeedback />
-        <p data-testid="feedback-total-score">{score}</p>
-        <h1 data-testid="feedback-text">{this.getAssertions()}</h1>
-        <h1 data-testid="feedback-total-question">{assertions}</h1>
-        <button
-          data-testid="btn-play-again"
-          type="button"
-          onClick={ () => history.push('/') }
-        >
-          Play Again
-        </button>
-        <button
-          data-testid="btn-ranking"
-          type="button"
-          onClick={ () => {
-            dispatch({ type: 'SCORE_UPDATE', payload: 0 });
-            history.push('/ranking');
-          } }
-        >
-          Ranking
-        </button>
-      </div>
+        <S.Container3>
+          <S.Score2 data-testid="feedback-total-score">{score}</S.Score2>
+          <S.Message data-testid="feedback-text">{this.getAssertions()}</S.Message>
+          <S.Score2 data-testid="feedback-total-question">{assertions}</S.Score2>
+          <S.Buttons
+            data-testid="btn-play-again"
+            type="button"
+            onClick={ () => history.push('/') }
+          >
+            Play Again
+          </S.Buttons>
+          <S.Buttons
+            data-testid="btn-ranking"
+            type="button"
+            onClick={ () => {
+              dispatch({ type: 'SCORE_UPDATE', payload: 0 });
+              history.push('/ranking');
+            } }
+          >
+            Ranking
+          </S.Buttons>
+        </S.Container3>
+      </S.Container>
     );
   }
 }

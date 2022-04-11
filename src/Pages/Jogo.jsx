@@ -6,6 +6,8 @@ import HeaderJogo from '../components/HeaderJogo';
 import ButtonTrivia from '../components/ButtonTrivia';
 import fetchgravatarAPI from '../helpers/triviaAPI';
 
+import * as S from './jogoStyle';
+
 class Jogo extends Component {
   constructor(props) {
     super(props);
@@ -111,30 +113,40 @@ class Jogo extends Component {
   render() {
     const { category, question, timerOver, getAnswer } = this.state;
     return (
-      <div>
+      <S.Container>
         <HeaderJogo />
-        <div>
-          <h3 data-testid="question-category">{category}</h3>
-          <h3 data-testid="question-text">{question}</h3>
+        <S.ContainerQuestion>
+          <S.Category
+            data-testid="question-category"
+          >
+            {category}
+          </S.Category>
+          <S.Question
+            data-testid="question-text"
+          >
+            {question}
+          </S.Question>
           <ButtonTrivia
             { ...this.state }
             handleClick={ this.handleClick }
             handleCorrectAnswer={ this.handleCorrectAnswer }
           />
-        </div>
-        <div>{timerOver}</div>
-        <div>
+        </S.ContainerQuestion>
+        <S.TimerContainer>
+          <S.TimerPlacar>{timerOver}</S.TimerPlacar>
+        </S.TimerContainer>
+        <S.ContainerButton>
           {getAnswer && (
-            <button
+            <S.ButtonNext
               data-testid="btn-next"
               type="button"
               onClick={ this.handleNextAnswer }
             >
               Próxima
-            </button>
+            </S.ButtonNext>
           )}
-        </div>
-      </div>
+        </S.ContainerButton>
+      </S.Container>
     );
   }
 }

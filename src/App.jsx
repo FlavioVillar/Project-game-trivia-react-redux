@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 // import logo from './trivia.png';
 import Login from './Pages/Login';
 import Jogo from './Pages/Jogo';
-import './App.css';
+// import './App.css';
 import Config from './Pages/Config';
 import Ranking from './Pages/Ranking';
 import FeedBack from './Pages/FeedBack';

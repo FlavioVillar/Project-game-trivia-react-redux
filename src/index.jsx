@@ -7,8 +7,11 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import store from './Redux/Store';
 
+import GlobalStyles from './globalStyles';
+
 ReactDOM.render(
   <Provider store={ store }>
+    <GlobalStyles />
     <BrowserRouter>
       <App />
     </BrowserRouter>
